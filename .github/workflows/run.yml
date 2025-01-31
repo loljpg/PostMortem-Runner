@@ -1,0 +1,38 @@
+name: Run
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up ollama.
+        run: |
+          curl -fsSL https://ollama.ai/install.sh | sh
+          echo "$HOME/.ollama/bin" >> $GITHUB_PATH
+
+      - name: Set up python.
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Checkout code.
+        uses: actions/checkout@v4
+        with:
+          repository: loljpg/PostMortem
+          token: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+
+      - name: Install requirements.
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run program.
+        run: python main.py
+        env:
+          PASSWORD: ${{secrets.GOOGLE_APP_PASSWORD}}
