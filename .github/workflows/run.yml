@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Set up ollama.
         run: |
+          echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
           curl -fsSL https://ollama.ai/install.sh | sh
           echo "$HOME/.ollama/bin" >> $GITHUB_PATH
 
@@ -36,3 +37,5 @@ jobs:
         run: python main.py
         env:
           GOOGLE_APP_PASSWORD: ${{secrets.GOOGLE_APP_PASSWORD}}
+          GITHUB_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
+          START_TIME: ${{env.START_TIME}}
